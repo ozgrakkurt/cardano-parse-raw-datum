@@ -45,9 +45,19 @@ const hexes = [
     "d8799f1a02aea540581c3feba3e7056736b5e5c129c758df14a5e7f3ea9663cac735cc71fcc7d87a80ff",
     "d8799f1a02b730c0581c3feba3e7056736b5e5c129c758df14a5e7f3ea9663cac735cc71fcc7d87a80ff",
     "d8799f1a01e84800581caa19f7457e305e26740e9d55554695b06fbe264997ba1337d397da8cd87a80ff",
+    "d8799f1a004c4b40581c7d29e669d6182fe8a358c716239506bce068f5d9ef7c7f8c52962138d87a80ff",
 ];
 
 for(const hex of hexes) {
     const data = CardanoWasm.PlutusData.from_bytes(Buffer.from(hex, "hex"));
     console.log(JSON.stringify(plutusDataToObj(data), null, 2));
 }
+
+// get addr from script pubkey
+const pubkey = CardanoWasm.ScriptPubkey.from_bytes(Buffer.from(
+    "8200581c7d29e669d6182fe8a358c716239506bce068f5d9ef7c7f8c52962138",
+    "hex",
+));
+const stakeCredential = CardanoWasm.StakeCredential.from_keyhash(pubkey.addr_keyhash());
+const addr = CardanoWasm.EnterpriseAddress.new(CardanoWasm.NetworkId.testnet(), stakeCredential);
+console.log(addr.to_address().to_bech32());
